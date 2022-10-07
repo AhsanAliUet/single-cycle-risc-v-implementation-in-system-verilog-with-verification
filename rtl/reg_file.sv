@@ -6,6 +6,7 @@ module reg_file #(
    input  logic                clk_i,
    input  logic                rst_i,
 
+   input  logic                we,
    input  logic [REGW-1:0]     raddr1_i,
    output logic [REG_SIZE-1:0] rdata1_o,
 
@@ -25,10 +26,10 @@ module reg_file #(
 
    always_ff @(posedge clk_i, posedge rst_i) begin
       if (rst_i) begin
-         for (int i = 0; i < NO_OF_REGS; i = i + 1) begin
-            reg_file[i] <= '0;
+         for (int i = 0; i < NO_OF_REGS; i = i + 1) begin 
+            reg_file[i] <= i;   //for now only
          end
-      end else if (|waddr_i) begin
+      end else if ((|waddr_i) && we) begin     //write addr is non-zero and we is 1'b1
          reg_file[waddr_i] <= wdata_i;
       end
    end

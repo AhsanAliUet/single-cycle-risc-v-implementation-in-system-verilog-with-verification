@@ -5,6 +5,7 @@ module tb_reg_file ();
    logic                clk_i;
    logic                rst_i;
 
+   logic                we;
    logic [REGW-1:0]     raddr1_i;
    logic [REG_SIZE-1:0] rdata1_o;
 
@@ -21,7 +22,8 @@ reg_file #(
 )i_reg_file(
    .clk_i(clk_i),
    .rst_i(rst_i),
-
+   
+   .we(we),
    .raddr1_i(raddr1_i),
    .rdata1_o(rdata1_o),
 

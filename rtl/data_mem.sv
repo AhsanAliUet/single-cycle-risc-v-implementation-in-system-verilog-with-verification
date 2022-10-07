@@ -6,7 +6,7 @@ module data_mem #(
 )(
    input  logic                clk_i,
    input  logic                rst_i,
-   
+   input  logic                we,
    input  logic [REG_SIZE-1:0] addr_i,     //PC will be given in place of it
    input  logic [REG_SIZE-1:0] wdata_i,
    output logic [REG_SIZE-1:0] rdata_o
@@ -21,8 +21,8 @@ module data_mem #(
          for (int i = 0; i < NO_OF_REGS; i = i + 1) begin
             data_mem[i] <= '0;
          end
-      end else begin          //data memory without re/we for now only
-         data_mem[addr_i] <= wdata_i;
+      end else if (we) begin          //data memory without re/we for now only
+         data_mem[addr_i[REG_SIZE-1:0]] <= wdata_i;
       end
 
    end
