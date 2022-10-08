@@ -1,3 +1,5 @@
+//Arithmetic and logic unit for the processor
+
 module alu #(
    parameter DW = 32
 )(

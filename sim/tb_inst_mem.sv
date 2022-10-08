@@ -1,3 +1,4 @@
+//test bench for instruction memory
 
 module tb_inst_mem();
    parameter REG_SIZE = 32;

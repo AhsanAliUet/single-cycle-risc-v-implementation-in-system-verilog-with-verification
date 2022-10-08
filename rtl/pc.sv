@@ -1,3 +1,4 @@
+//making PC register for processor
 
 module pc #(
    parameter DW = 32

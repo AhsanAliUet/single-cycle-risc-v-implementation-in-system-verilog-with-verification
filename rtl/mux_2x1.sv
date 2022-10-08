@@ -1,3 +1,4 @@
+//2 to 1 mux for to select PC and PC target
 
 module mux_2x1 #(
    parameter DW = 32

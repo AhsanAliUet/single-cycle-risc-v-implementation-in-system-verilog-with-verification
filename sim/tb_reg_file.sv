@@ -1,3 +1,5 @@
+//test bench for register file
+
 module tb_reg_file ();
    parameter REG_SIZE = 32;
    parameter NO_OF_REGS = 32;

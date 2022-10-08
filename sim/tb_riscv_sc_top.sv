@@ -1,3 +1,4 @@
+//test bench for top file of riscv
 
 module tb_riscv_sc_top();
    parameter DW = 32;

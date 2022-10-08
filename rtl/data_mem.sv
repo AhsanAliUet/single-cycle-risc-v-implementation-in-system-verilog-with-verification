@@ -1,4 +1,4 @@
-
+//data memory for the processor
 module data_mem #(
    parameter REG_SIZE = 32,
    parameter MEM_SIZE_IN_KB = 1,   //size of the instruction memory

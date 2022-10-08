@@ -1,3 +1,4 @@
+//top file of single cycle riscv
 
 module riscv_sc_top #(
    parameter DW = 32,

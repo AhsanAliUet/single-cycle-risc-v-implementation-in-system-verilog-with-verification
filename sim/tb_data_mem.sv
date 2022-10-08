@@ -1,3 +1,5 @@
+//test bench for data memory
+
 module tb_data_mem();
    parameter REG_SIZE = 32;
    parameter MEM_SIZE_IN_KB = 1;

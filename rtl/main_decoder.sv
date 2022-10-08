@@ -1,3 +1,5 @@
+//a part of the controller of processor
+
 module main_decoder (
    input  logic [6:0] opcode,
    input  logic       zero,

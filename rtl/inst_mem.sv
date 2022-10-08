@@ -1,3 +1,4 @@
+//instruction memory for the processor
 
 module inst_mem #(
    parameter REG_SIZE = 32,
