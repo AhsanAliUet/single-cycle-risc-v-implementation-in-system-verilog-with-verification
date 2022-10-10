@@ -6,7 +6,7 @@ module main_decoder (
    
    output logic       reg_write,
    output logic       mem_write,
-   output logic [1:0] imm_src,
+   output logic [2:0] imm_src,
    output logic       alu_src,
    output logic [1:0] result_src,
    output logic       pc_src,
@@ -21,7 +21,7 @@ always_comb begin
       7'b0000011: begin             //lw
          reg_write = 1'b1;
          mem_write = 1'b0;
-         imm_src = 2'b00;
+         imm_src = 3'b000;
          alu_src = 1'b1;
          result_src = 2'b01;
          branch = 1'b0;
@@ -33,7 +33,7 @@ always_comb begin
       7'b0100011: begin            //sw
          reg_write = 1'b0;
          mem_write = 1'b1;
-         imm_src = 2'b01;
+         imm_src = 3'b001;
          alu_src = 1'b1;
          result_src = 2'bxx;
          branch = 1'b0;
@@ -45,7 +45,7 @@ always_comb begin
       7'b0110011: begin            //R
          reg_write = 1'b1;
          mem_write = 1'b0;
-         imm_src = 2'bxx;
+         imm_src = 3'b000;         //it is don't care ideally
          alu_src = 1'b0;
          result_src = 2'b00;
          branch = 1'b0;
@@ -57,7 +57,7 @@ always_comb begin
       7'b1100011: begin            //B
          reg_write = 1'b0;
          mem_write = 1'b0;
-         imm_src = 2'b10;
+         imm_src = 3'b010;
          alu_src = 1'b0;
          result_src = 2'bxx;
          branch = 1'b1;
@@ -66,10 +66,10 @@ always_comb begin
          alu_op = 2'b01;
 
       end
-      7'b1100011: begin            //I
+      7'b0010011: begin            //I
          reg_write = 1'b1;
          mem_write = 1'b0;
-         imm_src = 2'b00;
+         imm_src = 3'b000;
          alu_src = 1'b1;
          result_src = 2'b00;
          branch = 1'b0;
@@ -78,10 +78,10 @@ always_comb begin
          alu_op = 2'b10;
 
       end
-      7'b1100011: begin            //Jal
+      7'b1101111: begin            //Jal
          reg_write = 1'b1;
          mem_write = 1'b0;
-         imm_src = 2'b11;
+         imm_src = 3'b011;
          alu_src = 1'bx;
          result_src = 2'b10;
          branch = 1'b0;

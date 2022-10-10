@@ -11,12 +11,16 @@ module alu #(
    input  logic [DW-1:0] alu_operand_1_i,
    input  logic [DW-1:0] alu_operand_2_i,
 
-   output logic [DW-1:0] alu_result_o
+   output logic [DW-1:0] alu_result_o,
+
+   output logic          zero
 );
 
    always_comb begin
+      zero = (alu_operand_1_i == alu_operand_2_i) ? 1 : 0;
+      
       case(opcode)
-         7'd51: begin    //opcode for R-type
+         7'h33: begin    //opcode for R-type
             case(func3)
                3'b000: begin  //add subtract
                   if (!func7_5) begin
@@ -52,6 +56,11 @@ module alu #(
                end
             endcase
          end
+         
+         7'h13: begin    //opcode for I-type
+            alu_result_o = alu_operand_1_i + alu_operand_2_i;
+         end
+            
       endcase
 
    end

@@ -23,17 +23,17 @@ module reg_file #(
    //packed array cannot be seen in waveforms
    logic [REG_SIZE-1:0] reg_file [0:NO_OF_REGS-1];
    
-   initial begin  //this block is just for the testing of R-type instructions
-      $readmemh("./reg_file.txt", reg_file);
-   end
+   // initial begin  //this block is just for the testing of R-type instructions
+   //    $readmemh("./reg_file.txt", reg_file);
+   // end
 
    assign rdata1_o = (|raddr1_i) ? reg_file[raddr1_i] : '0;    //asynchronous read
    assign rdata2_o = (|raddr2_i) ? reg_file[raddr2_i] : '0;    //asynchronous read
 
    always_ff @(negedge clk_i, posedge rst_i) begin
-      if (rst_i && !rst) begin //make sure that reg file is not written by rst for now only
+      if (rst_i) begin //make sure that reg file is not written by rst for now only
          for (int i = 0; i < NO_OF_REGS; i = i + 1) begin 
-            reg_file[i] <= i;   //for now only
+            reg_file[i] <= 0;   //for now only
          end
       end else if ((|waddr_i) && (we == 1) && !rst_i) begin     //write addr is non-zero and we is 1'b1
          reg_file[waddr_i] <= wdata_i;

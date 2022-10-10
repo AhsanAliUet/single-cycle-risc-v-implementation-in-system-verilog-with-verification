@@ -39,6 +39,20 @@ module riscv_sc_top #(
    logic [DW-1:0] rdata1;
    logic [DW-1:0] rdata2;
    logic [DW-1:0] alu_result;
+   logic          zero;               //output from ALU
+   logic [DW-1:0] scr_b;              //signal to support I-type
+
+   //control signals
+   logic          reg_write;
+   logic          mem_write;
+   logic [2:0]    imm_src;
+   logic          alu_src;
+   logic [1:0]    result_src;
+   logic          pc_src;
+   logic [1:0]    alu_op;
+
+   //extend unit signls
+   logic [DW-1:0] imm_ext;
 
 pc #(
    .DW(DW)
@@ -74,7 +88,7 @@ reg_file #(
    .clk_i(clk_i),
    .rst_i(rst_i),
 
-   .we(1'b1),
+   .we(reg_write),
    .raddr1_i(rs1),
    .rdata1_o(rdata1),
 
@@ -85,6 +99,23 @@ reg_file #(
    .wdata_i(alu_result)
 );
 
+imm_generator #(
+   .DW(DW)
+)i_imm_generator(
+   .inst(inst_o),
+   .s(imm_src),
+   .imm_ext(imm_ext)
+);
+
+mux_2x1 #(
+   .DW(DW)
+)i_mux_i_type(
+   .in0(rdata2),
+   .in1(imm_ext),
+   .s(alu_src),
+   .out(scr_b)
+);
+
 alu #(
    .DW(DW)
 )i_alu(
@@ -92,8 +123,23 @@ alu #(
    .func3(func3),
    .func7_5(func7[5]),
    .alu_operand_1_i(rdata1),
-   .alu_operand_2_i(rdata2),
-   .alu_result_o(alu_result)
+   .alu_operand_2_i(scr_b),
+   .alu_result_o(alu_result),
+   .zero(zero)
+);
+
+main_decoder i_main_decoder(
+   .opcode(opcode),
+   .zero(zero),
+   
+   .reg_write(reg_write),
+   .mem_write(mem_write),
+   .imm_src(imm_src),
+   .alu_src(alu_src),
+   .result_src(result_src),
+   .pc_src(pc_src),
+
+   .alu_op(alu_op)
 );
 
 endmodule
