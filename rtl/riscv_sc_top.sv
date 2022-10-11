@@ -47,20 +47,45 @@ module riscv_sc_top #(
    logic          mem_write;
    logic [2:0]    imm_src;
    logic          alu_src;
-   logic [1:0]    result_src;
+   logic [1:0]    wb_sel;
    logic          pc_src;
    logic [1:0]    alu_op;
 
    //extend unit signls
    logic [DW-1:0] imm_ext;
 
+   //alu signals
+   logic [DW-1:0] alu_operand_1;
+
+   //data memory signals
+   logic [REG_SIZE-1:0] rdata_data_mem;
+
+   //write back signals
+   logic [REG_SIZE-1:0] data_wb;
+
+   //branch condition checker
+   logic br_taken;
+
+   //
+   logic [DW-1:0] pc_target;
+
 pc #(
    .DW(DW)
 )i_pc(
    .clk_i(clk_i),
    .rst_i(rst_i),
-   .pc_next(pc_next),
+   .pc_next(pc_target),
    .pc(pc)
+);
+
+mux_2x1 #(           //the mux to select PC+4 or PC+Target
+   .DW(DW)
+)i_mux_pc(
+   .in0(pc_next),
+   .in1(alu_result),
+   .s(br_taken),
+
+   .out(pc_target)
 );
 
 adder #(
@@ -96,7 +121,7 @@ reg_file #(
    .rdata2_o(rdata2),
 
    .waddr_i(rd),
-   .wdata_i(alu_result)
+   .wdata_i(data_wb)
 );
 
 imm_generator #(
@@ -116,16 +141,59 @@ mux_2x1 #(
    .out(scr_b)
 );
 
+branch_checker #(
+   .REG_SIZE(REG_SIZE)
+)i_branch_checker(
+   .rdata1(rdata1),
+   .rdata2(rdata2),
+   .opcode(opcode),
+   .func3(func3),
+   .br_taken(br_taken)
+);
+
+mux_2x1 #(
+   .DW(DW)
+)i_mux_branch_pc(
+   .in0(pc),
+   .in1(rdata1),
+   .s(!br_taken),                //according to Sir M. Tahir
+   .out(alu_operand_1)
+);
+
 alu #(
    .DW(DW)
 )i_alu(
    .opcode(opcode),
    .func3(func3),
    .func7_5(func7[5]),
-   .alu_operand_1_i(rdata1),
+   .alu_operand_1_i(alu_operand_1),
    .alu_operand_2_i(scr_b),
    .alu_result_o(alu_result),
    .zero(zero)
+);
+
+data_mem #(
+   .REG_SIZE(REG_SIZE),
+   .MEM_SIZE_IN_KB(MEM_SIZE_IN_KB),
+   .NO_OF_REGS(NO_OF_REGS)
+)i_data(
+   .clk_i(clk_i),
+   .rst_i(rst_i),
+   .we(mem_write),
+   .addr_i(alu_result),
+   .wdata_i(rdata2),
+   .rdata_o(rdata_data_mem)
+);
+
+mux_4x1 #(
+   .DW(DW)
+)i_mux_wb(
+   .in0(alu_result),
+   .in1(rdata_data_mem),
+   .in2(32'h0),
+   .in3(32'h0),
+   .s(wb_sel),
+   .out(data_wb)
 );
 
 main_decoder i_main_decoder(
@@ -136,7 +204,7 @@ main_decoder i_main_decoder(
    .mem_write(mem_write),
    .imm_src(imm_src),
    .alu_src(alu_src),
-   .result_src(result_src),
+   .wb_sel(wb_sel),
    .pc_src(pc_src),
 
    .alu_op(alu_op)

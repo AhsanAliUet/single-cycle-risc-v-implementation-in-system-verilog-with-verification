@@ -8,7 +8,7 @@ module main_decoder (
    output logic       mem_write,
    output logic [2:0] imm_src,
    output logic       alu_src,
-   output logic [1:0] result_src,
+   output logic [1:0] wb_sel,
    output logic       pc_src,
 
    output logic [1:0] alu_op       //used to alu_decoder module
@@ -23,7 +23,7 @@ always_comb begin
          mem_write = 1'b0;
          imm_src = 3'b000;
          alu_src = 1'b1;
-         result_src = 2'b01;
+         wb_sel = 2'b01;
          branch = 1'b0;
          jump = 1'b0;
 
@@ -35,7 +35,7 @@ always_comb begin
          mem_write = 1'b1;
          imm_src = 3'b001;
          alu_src = 1'b1;
-         result_src = 2'bxx;
+         wb_sel = 2'b00;       //don't care, write what you want
          branch = 1'b0;
          jump = 1'b0;
 
@@ -47,7 +47,7 @@ always_comb begin
          mem_write = 1'b0;
          imm_src = 3'b000;         //it is don't care ideally
          alu_src = 1'b0;
-         result_src = 2'b00;
+         wb_sel = 2'b00;
          branch = 1'b0;
          jump = 1'b0;
 
@@ -58,8 +58,8 @@ always_comb begin
          reg_write = 1'b0;
          mem_write = 1'b0;
          imm_src = 3'b010;
-         alu_src = 1'b0;
-         result_src = 2'bxx;
+         alu_src = 1'b1;
+         wb_sel = 2'b00;
          branch = 1'b1;
          jump = 1'b0;
 
@@ -71,7 +71,7 @@ always_comb begin
          mem_write = 1'b0;
          imm_src = 3'b000;
          alu_src = 1'b1;
-         result_src = 2'b00;
+         wb_sel = 2'b00;
          branch = 1'b0;
          jump = 1'b0;
 
@@ -83,7 +83,7 @@ always_comb begin
          mem_write = 1'b0;
          imm_src = 3'b011;
          alu_src = 1'bx;
-         result_src = 2'b10;
+         wb_sel = 2'b10;
          branch = 1'b0;
          jump = 1'b1;
 
