@@ -62,6 +62,7 @@ module riscv_sc_top #(
 
    //write back signals
    logic [REG_SIZE-1:0] data_wb;
+   logic [REG_SIZE-1:0] pc_plus_4;
 
    //branch condition checker
    logic br_taken;
@@ -185,12 +186,20 @@ data_mem #(
    .rdata_o(rdata_data_mem)
 );
 
+adder #(
+   .DW(DW),
+   .ADDENT(ADDENT)
+)i_adder_j(
+   .in(pc),
+   .out(pc_plus_4)
+);
+
 mux_4x1 #(
    .DW(DW)
 )i_mux_wb(
    .in0(alu_result),
    .in1(rdata_data_mem),
-   .in2(32'h0),
+   .in2(pc_plus_4),        //for jumps
    .in3(32'h0),
    .s(wb_sel),
    .out(data_wb)

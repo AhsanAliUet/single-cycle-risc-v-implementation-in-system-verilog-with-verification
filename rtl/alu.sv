@@ -95,7 +95,19 @@ module alu #(
             alu_result_o = alu_operand_1_i + alu_operand_2_i;  //always addition in LOADS
          end
 
-         7'd99: begin
+         7'd35: begin    //opcode for S-type
+            alu_result_o = alu_operand_1_i + alu_operand_2_i;
+         end
+
+         7'd99: begin    //opcode for B-type
+            alu_result_o = alu_operand_1_i + alu_operand_2_i;
+         end
+
+         7'd23 , 7'd55: begin    //opcode for U-type
+            alu_result_o = alu_operand_1_i + alu_operand_2_i;
+         end
+
+         7'd103 , 7'd111: begin    //opcode for Jumps  
             alu_result_o = alu_operand_1_i + alu_operand_2_i;
          end
       endcase

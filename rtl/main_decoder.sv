@@ -78,20 +78,32 @@ always_comb begin
          alu_op = 2'b10;
 
       end
-      7'b1101111: begin            //Jal
+
+      7'b0110111 , 7'b0010111: begin            //U-type
+         reg_write = 1'b1;
+         mem_write = 1'b0;
+         imm_src = 3'b100;
+         alu_src = 1'b1;
+         wb_sel = 2'b00;
+         branch = 1'b0;
+         jump = 1'b0;
+
+         alu_op = 2'bxx;
+      end
+   
+      7'b1101111 , 7'b1100111: begin            //J   
          reg_write = 1'b1;
          mem_write = 1'b0;
          imm_src = 3'b011;
-         alu_src = 1'bx;
-         wb_sel = 2'b10;
+         alu_src = 1'b1;
+         wb_sel = 2'b11;
          branch = 1'b0;
          jump = 1'b1;
 
          alu_op = 2'bxx;
-
       end
    endcase
-   assign pc_src = (zero & branch) | jump;
+   // assign pc_src = (zero & branch) | jump;
 end
 
 

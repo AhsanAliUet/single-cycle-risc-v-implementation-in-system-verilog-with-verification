@@ -1,3 +1,5 @@
+//a unit for both jump and branch instructions
+
 module branch_checker #(
    parameter REG_SIZE = 32
 )(
@@ -31,7 +33,10 @@ module branch_checker #(
             3'b111: begin  //bgeu
                br_taken = (rdata1 >= rdata2) ? 1 : 0;
             end
+            default: br_taken = 0;
          endcase
+      end else if (opcode == 7'd103 || opcode == 7'd111) begin   //jumps
+         br_taken = 1;
       end else begin
          br_taken = 0;
       end
