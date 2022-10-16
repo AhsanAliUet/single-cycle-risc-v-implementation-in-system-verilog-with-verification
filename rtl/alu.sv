@@ -11,13 +11,11 @@ module alu #(
    input  logic [DW-1:0] alu_operand_1_i,
    input  logic [DW-1:0] alu_operand_2_i,
 
-   output logic [DW-1:0] alu_result_o,
-
-   output logic          zero
+   output logic [DW-1:0] alu_result_o
 );
 
    always_comb begin
-      zero = (alu_operand_1_i == alu_operand_2_i) ? 1 : 0;
+      //zero = (alu_operand_1_i == alu_operand_2_i) ? 1 : 0;
       
       case(opcode)
          7'h33: begin    //opcode for R-type

@@ -1,15 +1,10 @@
-i_types:
-   addi x1, x0, 1
-   addi x2, x0, 2
-   addi x3, x0, 3
-   addi x4, x0, 4
-   addi x5, x0, 5
-   addi x6, x0, 6
 
-r_types:
-   add x7, x3, x4
-   add x8, x4, x4
-   add x9, x4, x5
-   add x10, x5, x5
+addi x1, x0, 0x00000234
+addi x2, x0, 2
+addi x3, x0, 3
+addi x4, x0, 4
+addi x5, x0, 5
+addi x7, x0, 1
 
-bne x3, x4, i_types
+sw x1, 0(x7)
+lb x6, 3(x7)

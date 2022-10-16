@@ -39,7 +39,6 @@ module riscv_sc_top #(
    logic [DW-1:0] rdata1;
    logic [DW-1:0] rdata2;
    logic [DW-1:0] alu_result;
-   logic          zero;               //output from ALU
    logic [DW-1:0] scr_b;              //signal to support I-type
 
    //control signals
@@ -48,7 +47,6 @@ module riscv_sc_top #(
    logic [2:0]    imm_src;
    logic          alu_src;
    logic [1:0]    wb_sel;
-   logic          pc_src;
    logic [1:0]    alu_op;
 
    //extend unit signls
@@ -56,9 +54,13 @@ module riscv_sc_top #(
 
    //alu signals
    logic [DW-1:0] alu_operand_1;
+   logic [2:0]    alu_control;
 
    //data memory signals
    logic [REG_SIZE-1:0] rdata_data_mem;
+   logic [DW-1:0]       addr_data_mem;
+   logic [DW-1:0]       data_l_o;
+   logic [DW-1:0]       data_s_o;
 
    //write back signals
    logic [REG_SIZE-1:0] data_wb;
@@ -161,16 +163,53 @@ mux_2x1 #(
    .out(alu_operand_1)
 );
 
-alu #(
+// alu #(   //non-reduced hardware
+//    .DW(DW)
+// )i_alu(
+//    .opcode(opcode),
+//    .func3(func3),
+//    .func7_5(func7[5]),
+//    .alu_operand_1_i(alu_operand_1),
+//    .alu_operand_2_i(scr_b),
+//    .alu_result_o(alu_result)
+// );
+
+alu_decoder #(
    .DW(DW)
-)i_alu(
+)i_alu_decoder(
    .opcode(opcode),
    .func3(func3),
    .func7_5(func7[5]),
+
+   .alu_control(alu_control)
+);
+
+alu_new #(   //reduced hardware
+   .DW(DW)
+)i_alu_new(
+   .opcode(opcode),
+   .func7_5(func7[5]),
+
    .alu_operand_1_i(alu_operand_1),
    .alu_operand_2_i(scr_b),
-   .alu_result_o(alu_result),
-   .zero(zero)
+   .alu_control(alu_control),
+   .alu_result_o(alu_result)
+);
+
+lsu #(
+   .DW(DW)
+)i_lsu(
+   .opcode(opcode),
+   .func3(func3),
+
+   .addr_in(alu_result),
+   .addr_out(addr_data_mem),    
+
+   .data_s(rdata2),
+   .data_s_o(data_s_o),
+
+   .data_l(rdata_data_mem),
+   .data_l_o(data_l_o)
 );
 
 data_mem #(
@@ -181,8 +220,9 @@ data_mem #(
    .clk_i(clk_i),
    .rst_i(rst_i),
    .we(mem_write),
-   .addr_i(alu_result),
-   .wdata_i(rdata2),
+   .cs(1'b0),         //Only one data memory, so always select it
+   .addr_i(addr_data_mem),
+   .wdata_i(data_s_o),
    .rdata_o(rdata_data_mem)
 );
 
@@ -198,7 +238,7 @@ mux_4x1 #(
    .DW(DW)
 )i_mux_wb(
    .in0(alu_result),
-   .in1(rdata_data_mem),
+   .in1(data_l_o),
    .in2(pc_plus_4),        //for jumps
    .in3(32'h0),
    .s(wb_sel),
@@ -207,14 +247,12 @@ mux_4x1 #(
 
 main_decoder i_main_decoder(
    .opcode(opcode),
-   .zero(zero),
    
    .reg_write(reg_write),
    .mem_write(mem_write),
    .imm_src(imm_src),
    .alu_src(alu_src),
    .wb_sel(wb_sel),
-   .pc_src(pc_src),
 
    .alu_op(alu_op)
 );
