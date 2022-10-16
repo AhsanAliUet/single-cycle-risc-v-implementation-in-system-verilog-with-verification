@@ -216,7 +216,7 @@ data_mem #(
    .REG_SIZE(REG_SIZE),
    .MEM_SIZE_IN_KB(MEM_SIZE_IN_KB),
    .NO_OF_REGS(NO_OF_REGS)
-)i_data(
+)i_data_mem(
    .clk_i(clk_i),
    .rst_i(rst_i),
    .we(mem_write),

@@ -35,7 +35,7 @@ module reg_file #(
          for (int i = 0; i < NO_OF_REGS; i = i + 1) begin 
             reg_file[i] <= 0;   //for now only
          end
-      end else if ((|waddr_i) && (we == 1) && !rst_i) begin     //write addr is non-zero and we is 1'b1
+      end else if ((|waddr_i) && (we == 1)) begin     //write addr is non-zero and we is 1'b1
          reg_file[waddr_i] <= wdata_i;
       end
    end

@@ -25,8 +25,6 @@ always_comb begin
          branch    = 1'b0;
          jump      = 1'b0;
 
-         alu_op    = 2'b00;
-
       end
       7'b0100011: begin            //sw
          reg_write = 1'b0;
@@ -36,8 +34,6 @@ always_comb begin
          wb_sel    = 2'b00;       //don't care, write what you want
          branch    = 1'b0;
          jump      = 1'b0;
-
-         alu_op    = 2'b00;
 
       end
       7'b0110011: begin            //R
@@ -49,8 +45,6 @@ always_comb begin
          branch    = 1'b0;
          jump      = 1'b0;
 
-         alu_op    = 2'b10;
-
       end
       7'b1100011: begin            //B
          reg_write = 1'b0;
@@ -60,8 +54,6 @@ always_comb begin
          wb_sel    = 2'b00;
          branch    = 1'b1;
          jump      = 1'b0;
-
-         alu_op    = 2'b01;
 
       end
       7'b0010011: begin            //I
@@ -73,7 +65,6 @@ always_comb begin
          branch    = 1'b0;
          jump      = 1'b0;
 
-         alu_op    = 2'b10;
 
       end
 
@@ -86,19 +77,26 @@ always_comb begin
          branch    = 1'b0;
          jump      = 1'b0;
 
-         alu_op    = 2'bxx;
       end
    
-      7'b1101111 , 7'b1100111: begin            //J   
+      7'b1101111: begin            //Jal 
          reg_write = 1'b1;
          mem_write = 1'b0;
          imm_src   = 3'b011;
          alu_src   = 1'b1;
-         wb_sel    = 2'b11;
+         wb_sel    = 2'b10;
          branch    = 1'b0;
          jump      = 1'b1;
 
-         alu_op    = 2'bxx;
+      end
+      7'b1100111: begin         //Jalr
+         reg_write = 1'b1;
+         mem_write = 1'b0;
+         imm_src   = 3'b000;
+         alu_src   = 1'b1;
+         wb_sel    = 2'b10;
+         branch    = 1'b0;
+         jump      = 1'b0;
       end
    endcase
 end
