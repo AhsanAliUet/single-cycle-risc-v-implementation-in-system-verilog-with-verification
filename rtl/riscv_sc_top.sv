@@ -71,7 +71,7 @@ module riscv_sc_top #(
 
    //
    logic [DW-1:0] pc_target;
-
+   logic [3:0] mask;
 pc #(
    .DW(DW)
 )i_pc(
@@ -209,7 +209,8 @@ lsu #(
    .data_s_o(data_s_o),
 
    .data_l(rdata_data_mem),
-   .data_l_o(data_l_o)
+   .data_l_o(data_l_o),
+   .mask(mask)
 );
 
 data_mem #(
@@ -221,6 +222,7 @@ data_mem #(
    .rst_i(rst_i),
    .we(mem_write),
    .cs(1'b0),         //Only one data memory, so always select it
+   .mask(mask),
    .addr_i(addr_data_mem),
    .wdata_i(data_s_o),
    .rdata_o(rdata_data_mem)
