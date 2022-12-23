@@ -41,6 +41,16 @@ riscv_sc_top #(
 
    initial begin
       #5000;
+      $display("=========================== Register file is ... ===========================");
+      for (int i = 0; i < 32; i++) begin
+         $display("x%2d = 0x%8h", i, i_riscv_sc_top.i_reg_file.reg_file[i]);
+      end
+
+      $display("=========================== Data memory is ... ===========================");
+      for (int i = 0; i < 21; i++) begin
+         $display("x%2d = 0x%8h", i, i_riscv_sc_top.i_data_mem.data_mem[i]);
+      end
+
       $finish;
    end
 
@@ -48,7 +58,7 @@ riscv_sc_top #(
       $dumpfile("docs/dump.vcd");
       $dumpvars;
    end
-   
+
    task reset();
                         rst_i <= 0;
       @(posedge clk_i); rst_i <= #1 1;
