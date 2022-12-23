@@ -12,7 +12,7 @@ module inst_mem #(
    logic [REG_SIZE-1:0] inst_mem [0:NO_OF_REGS-1];
 
    initial begin
-      $readmemh("H://Semester 7//CA//Lab//Lab4//rtl//machine_codes.txt", inst_mem);
+      $readmemh("sim/machine_codes.mem", inst_mem);
    end
    
    assign inst_o = inst_mem[addr_i[REG_SIZE-1:2]];  //making it byte addressible
