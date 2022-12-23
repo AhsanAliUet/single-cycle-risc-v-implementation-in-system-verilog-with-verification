@@ -37,4 +37,5 @@ negative_and_zero:              #exception handler
 two:
    addi x4, x0, 2
 stop:
+   sw x4, 0(x0)
    j stop
