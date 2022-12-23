@@ -39,6 +39,16 @@ riscv_sc_top #(
       join
    end
 
+   initial begin
+      #5000;
+      $finish;
+   end
+
+   initial begin
+      $dumpfile("docs/dump.vcd");
+      $dumpvars;
+   end
+   
    task reset();
                         rst_i <= 0;
       @(posedge clk_i); rst_i <= #1 1;
