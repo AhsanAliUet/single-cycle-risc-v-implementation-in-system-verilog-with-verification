@@ -1,6 +1,7 @@
 
 addi x3, x0, 5                  #the number for which we want to find factorial, n
-blt x3, x0, negative_and_zero   #if n < 1 then return 1
+addi x20, x0, 2
+blt x3, x20, negative_and_zero  #if n < 1 then return 1
 beq x3, x0, negative_and_zero   #if n == 0 then return 1
 
 addi x1, x0, 2                  #used for comparison
